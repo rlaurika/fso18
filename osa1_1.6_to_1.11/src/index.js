@@ -27,6 +27,31 @@ class App extends React.Component {
     }
   }
 
+  feedbackAverage = () => {
+    let feedbackSum = 0
+    feedbackSum += this.state.good
+    feedbackSum -= this.state.bad
+
+    let feedbackCount = this.state.good + this.state.neutral + this.state.bad
+
+    if (feedbackCount === 0) {
+      return 0
+    } else {
+      return (feedbackSum/feedbackCount).toFixed(1)
+    }
+  }
+
+  percentPositive = () => {
+    let positive = this.state.good
+    let nonpositive = this.state.neutral + this.state.bad
+
+    if (positive === 0 && nonpositive === 0) {
+      return 0
+    } else {
+      return ((positive/(positive+nonpositive))*100).toFixed(1)
+    }
+  }
+
   render() {
     return (
       <div>
@@ -40,6 +65,8 @@ class App extends React.Component {
         <div>hyvä {this.state.good}</div>
         <div>neutraali {this.state.neutral}</div>
         <div>huono {this.state.bad}</div>
+        <div>keskiarvo {this.feedbackAverage()}</div>
+        <div>positiivisia {this.percentPositive()} %</div>
       </div>
     )
   }
