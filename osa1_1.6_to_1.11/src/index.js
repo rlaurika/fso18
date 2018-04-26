@@ -1,6 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const Button = ({action, text}) => {
+  return (
+    <button onClick={action}>{text}</button>
+  )
+}
+
+const Statistics = ({good, neutral, bad, avg, positive}) => {
+  return (
+  <div>
+    <Statistic text='hyvä' value={good}/>
+    <Statistic text='neutraali' value={neutral}/>
+    <Statistic text='huono' value={bad}/>
+    <Statistic text='keskiarvo' value={avg}/>
+    <Statistic text='positiivisia' value={positive} postfix='%'/>
+  </div>
+  )
+}
+
+const Statistic = ({text, value, postfix}) => {
+  return (
+    <div>{text} {value} {postfix}</div>
+  )
+}
+
 class App extends React.Component {
   constructor() {
     super()
@@ -57,16 +81,16 @@ class App extends React.Component {
       <div>
         <div><h1>anna palautetta</h1></div>
         <div>
-          <button onClick={this.giveFeedback('good')}>hyvä</button>
-          <button onClick={this.giveFeedback('neutral')}>neutraali</button>
-          <button onClick={this.giveFeedback('bad')}>huono</button>
+          <Button action={this.giveFeedback('good')} text='hyvä'/>
+          <Button action={this.giveFeedback('neutral')} text='neutraali'/>
+          <Button action={this.giveFeedback('bad')} text='huono'/>
         </div>
         <div><h1>statistiikka</h1></div>
-        <div>hyvä {this.state.good}</div>
-        <div>neutraali {this.state.neutral}</div>
-        <div>huono {this.state.bad}</div>
-        <div>keskiarvo {this.feedbackAverage()}</div>
-        <div>positiivisia {this.percentPositive()} %</div>
+        <Statistics good={this.state.good}
+                    neutral={this.state.neutral}
+                    bad={this.state.bad}
+                    avg={this.feedbackAverage()}
+                    positive={this.percentPositive()}/>
       </div>
     )
   }
