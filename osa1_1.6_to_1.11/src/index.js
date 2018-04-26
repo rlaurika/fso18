@@ -40,18 +40,8 @@ class App extends React.Component {
   }
 
   giveFeedback = (feedbackType) => {
-    if (feedbackType === 'good') {
-      return () => {
-        this.setState({ good: this.state.good + 1 })
-      }
-    } else if (feedbackType === 'neutral') {
-      return () => {
-        this.setState({ neutral: this.state.neutral + 1 })
-      }
-    } else if (feedbackType === 'bad') {
-      return () => {
-        this.setState({ bad: this.state.bad + 1 })
-      }
+    return () => {
+      this.setState({ [feedbackType]: this.state[feedbackType] + 1} )
     }
   }
 
