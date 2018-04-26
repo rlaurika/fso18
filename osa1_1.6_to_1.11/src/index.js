@@ -12,20 +12,25 @@ const Statistics = ({good, neutral, bad, avg, positive}) => {
     return (<p>ei yhtään palautetta annettu</p>)
   } else {
     return (
-    <div>
-      <Statistic text='hyvä' value={good}/>
-      <Statistic text='neutraali' value={neutral}/>
-      <Statistic text='huono' value={bad}/>
-      <Statistic text='keskiarvo' value={avg}/>
-      <Statistic text='positiivisia' value={positive} postfix='%'/>
-    </div>
+    <table>
+      <tbody>
+        <Statistic text='hyvä' value={good}/>
+        <Statistic text='neutraali' value={neutral}/>
+        <Statistic text='huono' value={bad}/>
+        <Statistic text='keskiarvo' value={avg}/>
+        <Statistic text='positiivisia' value={positive} postfix='%'/>
+      </tbody>
+    </table>
     )
   }
 }
 
 const Statistic = ({text, value, postfix}) => {
   return (
-    <div>{text} {value} {postfix}</div>
+    <tr>
+      <td>{text}</td>
+      <td>{value} {postfix}</td>
+    </tr>
   )
 }
 
