@@ -8,15 +8,19 @@ const Button = ({action, text}) => {
 }
 
 const Statistics = ({good, neutral, bad, avg, positive}) => {
-  return (
-  <div>
-    <Statistic text='hyvä' value={good}/>
-    <Statistic text='neutraali' value={neutral}/>
-    <Statistic text='huono' value={bad}/>
-    <Statistic text='keskiarvo' value={avg}/>
-    <Statistic text='positiivisia' value={positive} postfix='%'/>
-  </div>
-  )
+  if (good == 0 && neutral == 0 && bad == 0) {
+    return (<p>ei yhtään palautetta annettu</p>)
+  } else {
+    return (
+    <div>
+      <Statistic text='hyvä' value={good}/>
+      <Statistic text='neutraali' value={neutral}/>
+      <Statistic text='huono' value={bad}/>
+      <Statistic text='keskiarvo' value={avg}/>
+      <Statistic text='positiivisia' value={positive} postfix='%'/>
+    </div>
+    )
+  }
 }
 
 const Statistic = ({text, value, postfix}) => {
