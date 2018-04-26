@@ -8,7 +8,7 @@ const Button = ({action, text}) => {
 }
 
 const Statistics = ({good, neutral, bad, avg, positive}) => {
-  if (good == 0 && neutral == 0 && bad == 0) {
+  if (good === 0 && neutral === 0 && bad === 0) {
     return (<p>ei yhtään palautetta annettu</p>)
   } else {
     return (
