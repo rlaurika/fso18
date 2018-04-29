@@ -11,7 +11,8 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selected: 0
+      selected: 0,
+      points: [0, 0, 0, 0, 0, 0]
     }
   }
 
@@ -22,13 +23,24 @@ class App extends React.Component {
     }
   }
 
+  castVote = (number) => {
+    const pointsCopy = [...this.state.points]
+    pointsCopy[number] += 1
+    return () => {
+      this.setState({points: pointsCopy})
+    }
+  }
+
   render() {
     return (
       <div>
         <div>
           {this.props.anecdotes[this.state.selected]}
+          <p>has {this.state.points[this.state.selected]} points</p>
         </div>
         <div>
+          <Button action={this.castVote(this.state.selected)}
+                  text='vote'/>
           <Button action={this.setRandomSelection(this.props.anecdotes.length - 1)}
                   text='next anecdote'/>
         </div>
