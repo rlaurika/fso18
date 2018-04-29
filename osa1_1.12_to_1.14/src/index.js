@@ -31,6 +31,20 @@ class App extends React.Component {
     }
   }
 
+  getBestAnecdote = () => {
+    let currentMostVotes = 0
+    let currentBest = 0
+    const pointsCopy = [...this.state.points]
+    pointsCopy.forEach(function(item, index, array) {
+      if (array[index] > currentMostVotes) {
+        currentBest = index
+        currentMostVotes = array[index]
+      }
+    });
+
+    return currentBest
+  }
+
   render() {
     return (
       <div>
@@ -43,6 +57,11 @@ class App extends React.Component {
                   text='vote'/>
           <Button action={this.setRandomSelection(this.props.anecdotes.length - 1)}
                   text='next anecdote'/>
+        </div>
+        <div>
+          <h1>anecdote with most votes:</h1>
+          <p>{this.props.anecdotes[this.getBestAnecdote()]}</p>
+          <p>has {this.state.points[this.getBestAnecdote()]} votes</p>
         </div>
       </div>
     )
