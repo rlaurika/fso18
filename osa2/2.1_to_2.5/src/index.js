@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 const Kurssi = (props) => {
   const kurssi = props.kurssi
-  
+
   return (
     <div>
       <Otsikko kurssi={kurssi.nimi}/>
@@ -24,7 +24,7 @@ const Otsikko = (props) => {
 const Sisalto = (props) => {
   const osat = props.osat
 
-  const show_parts = () => osat.map(osa => 
+  const show_parts = () => osat.map(osa =>
     <Osa key={osa.id} nimi={osa.nimi} tehtavia={osa.tehtavia}/>
   )
 
@@ -59,6 +59,7 @@ const App = () => {
   const kurssit = [
     {
       nimi: 'Half Stack -sovelluskehitys',
+      id: 1,
       osat: [
         {
           nimi: 'Reactin perusteet',
@@ -102,7 +103,7 @@ const App = () => {
 
   return (
     <div>
-      {kurssit.map(kurssi => <Kurssi kurssi={kurssi} />)}
+      {kurssit.map(kurssi => <Kurssi key={kurssi.id} kurssi={kurssi} />)}
     </div>
   )
 }
