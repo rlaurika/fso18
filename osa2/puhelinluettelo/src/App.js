@@ -25,12 +25,22 @@ class App extends React.Component {
       name: this.state.newName
     }
 
-    const persons = this.state.persons.concat(personObject)
+    let addName = true;
 
-    this.setState({
-      persons: persons,
-      newName: ''
+    this.state.persons.forEach(function(item, index, array) {
+      if (item.name === personObject.name) {
+        alert('Nimi on jo lisätty');
+        addName = false;
+      }
     })
+    if (addName) {
+      const persons = this.state.persons.concat(personObject)
+
+      this.setState({
+        persons: persons,
+        newName: ''
+      })
+    }
   }
 
   handleNameChange = (event) => {
