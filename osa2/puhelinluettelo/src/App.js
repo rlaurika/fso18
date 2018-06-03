@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PersonListItem = (props) => {
+const PersonTableItem = (props) => {
   const name = props.name
   const number = props.number
 
@@ -9,6 +9,47 @@ const PersonListItem = (props) => {
       <td>{name}</td>
       <td>{number}</td>
     </tr>
+  )
+}
+
+const PersonTable = (props) => {
+  const persons = props.persons
+  const filter = props.filter
+
+  return (
+    <table>
+      <tbody>
+        {persons.filter(
+          person => { return person.name.toLowerCase().includes(filter.toLowerCase()) }
+        ).map(
+          person => <PersonTableItem key={person.name} name={person.name} number={person.number}/>)
+        }
+      </tbody>
+    </table>
+  )
+}
+
+const NewPersonForm = (props) => {
+  return (
+    <form onSubmit={props.addPerson}>
+      <div>
+        nimi: <input value={props.newName} onChange={props.handleNameChange}/>
+      </div>
+      <div>
+        numero: <input value={props.newNumber} onChange={props.handleNumberChange}/>
+      </div>
+      <div>
+        <button type="submit">lisää</button>
+      </div>
+    </form>
+  )
+}
+
+const FilterField = (props) => {
+  return (
+    <div>
+      rajaa näytettäviä: <input value={props.filter} onChange={props.handleFilterChange}/>
+    </div>
   )
 }
 
@@ -71,31 +112,15 @@ class App extends React.Component {
     return (
       <div>
         <h1>Puhelinluettelo</h1>
-        <div>
-          rajaa näytettäviä: <input value={this.state.filter} onChange={this.handleFilterChange}/>
-        </div>
+        <FilterField filter={this.state.filter} handleFilterChange={this.handleFilterChange}/>
         <h2>Lisää uusi</h2>
-        <form onSubmit={this.addPerson}>
-          <div>
-            nimi: <input value={this.state.newName} onChange={this.handleNameChange}/>
-          </div>
-          <div>
-            numero: <input value={this.state.newNumber} onChange={this.handleNumberChange}/>
-          </div>
-          <div>
-            <button type="submit">lisää</button>
-          </div>
-        </form>
+        <NewPersonForm newName={this.state.newName}
+                       newNumber={this.state.newNumber}
+                       addPerson={this.addPerson}
+                       handleNameChange={this.handleNameChange}
+                       handleNumberChange={this.handleNumberChange}/>
         <h2>Numerot</h2>
-        <table>
-          <tbody>
-            {this.state.persons.filter(
-              person => { return person.name.toLowerCase().includes(this.state.filter.toLowerCase()) }
-            ).map(
-              person => <PersonListItem key={person.name} name={person.name} number={person.number}/>)
-            }
-          </tbody>
-        </table>
+        <PersonTable persons={this.state.persons} filter={this.state.filter}/>
       </div>
     )
   }
