@@ -2,41 +2,47 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios'
 
-const CountryView = (props) => {
-  const countries = props.countries
-  const filter = props.filter
+const CountryInfoView = (props) => {
+  return (
+    <div>
+      <h1>{props.country.name}</h1>
+      <p>capital: {props.country.capital}</p>
+      <p>population: {props.country.population}</p>
+      <img className='flag' alt='Flag' src={props.country.flag}/>
+    </div>
+  )
+}
 
-  const countries_filtered = countries.filter(country => {
-    return country.name.toLowerCase().includes(filter.toLowerCase())
-  })
+class CountryListView extends Component {
+  render() {
+    const countries = this.props.countries
+    const filter = this.props.filter
 
-  if (countries_filtered.length > 10) {
-    return (
-      <div>too many countries, specify another filter</div>
-    )
-  } else if (countries_filtered.length === 1) {
-    const country = countries_filtered[0]
+    const countries_filtered = countries.filter(country => {
+      return country.name.toLowerCase().includes(filter.toLowerCase())
+    })
 
-    return (
-      <div>
-        <h1>{country.name}</h1>
-        <p>capital: {country.capital}</p>
-        <p>population: {country.population}</p>
-        <img className='flag' alt='Flag' src={country.flag}/>
-      </div>
-    )
-  } else if (countries_filtered.length === 0) {
-    return (
-      <div>no country found</div>
-    )
-  } else {
-    return (
-      <div>
-        {countries_filtered.map(country =>
-          <div key={country.name} >{country.name}</div>
-        )}
-      </div>
-    )
+    if (countries_filtered.length > 10) {
+      return (
+        <div>too many countries, specify another filter</div>
+      )
+    } else if (countries_filtered.length === 1) {
+      const country = countries_filtered[0]
+
+      return (<CountryInfoView country={country}/>)
+    } else if (countries_filtered.length === 0) {
+      return (
+        <div>no country found</div>
+      )
+    } else {
+      return (
+        <div>
+          {countries_filtered.map(country =>
+            <div key={country.name} onClick={this.props.countryClickHandler}>{country.name}</div>
+          )}
+        </div>
+      )
+    }
   }
 }
 
@@ -61,11 +67,18 @@ class App extends Component {
     this.setState({ filter: event.target.value })
   }
 
+  countryClickHandler = (event) => {
+    this.setState({ filter: event.target.innerHTML })
+  }
+
   render() {
     return(
       <div>
         <div>find countries: <input value={this.state.filter} onChange={this.handleFilterChange}/></div>
-        <CountryView countries={this.state.countries} filter={this.state.filter}/>
+        <CountryListView
+          countries={this.state.countries}
+          filter={this.state.filter}
+          countryClickHandler={this.countryClickHandler}/>
       </div>
     )
   }
