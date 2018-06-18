@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios'
+import personService from './services/persons'
 
 const PersonTableItem = (props) => {
   const name = props.name
@@ -66,10 +66,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => {
-        this.setState({ persons: response.data })
+        this.setState({ persons: response })
       })
   }
 
@@ -90,13 +90,15 @@ class App extends React.Component {
     })
 
     if (addName) {
-      const persons = this.state.persons.concat(personObject)
-
-      this.setState({
-        persons: persons,
-        newName: '',
-        newNumber: ''
-      })
+      personService
+        .create(personObject)
+        .then(newPerson => {
+          this.setState({
+            persons: this.state.persons.concat(newPerson),
+            newName: '',
+            newNumber: ''
+          })
+        })
     }
   }
 
