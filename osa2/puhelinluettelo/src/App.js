@@ -1,6 +1,18 @@
 import React from 'react';
 import personService from './services/persons'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  } else {
+    return (
+      <div className="message">
+        {message}
+      </div>
+    )
+  }
+}
+
 const PersonTableItem = ({ name, number, delHandler }) => {
   return (
     <tr>
@@ -60,7 +72,8 @@ class App extends React.Component {
       persons: [],
       newName: '',
       newNumber: '',
-      filter: ''
+      filter: '',
+      message: null
     }
   }
 
@@ -96,8 +109,12 @@ class App extends React.Component {
           this.setState({
             persons: this.state.persons.concat(newPerson),
             newName: '',
-            newNumber: ''
+            newNumber: '',
+            message: `Lisättiin ${newPerson.name}`
           })
+          setTimeout (() => {
+            this.setState({message: null})
+          }, 5000)
         })
     } else {
       const ok_to_replace =
@@ -110,8 +127,12 @@ class App extends React.Component {
             this.setState({
               persons: this.state.persons.map(person => person.id === person_to_update ? newPerson : person),
               newName: '',
-              newNumber: ''
+              newNumber: '',
+              message: `Päivitettiin henkilön ${newPerson.name} tiedot`
             })
+            setTimeout (() => {
+              this.setState({message: null})
+            }, 5000)
           })
       }
     }
@@ -127,8 +148,12 @@ class App extends React.Component {
           .remove(id)
           .then(() => {
             this.setState({
-              persons: this.state.persons.filter(n => n.id !== id)
+              persons: this.state.persons.filter(n => n.id !== id),
+              message: `Poistettiin ${personObject.name}`
             })
+            setTimeout (() => {
+              this.setState({message: null})
+            }, 5000)
           })
       }
     }
@@ -150,6 +175,7 @@ class App extends React.Component {
     return (
       <div>
         <h1>Puhelinluettelo</h1>
+        <Notification message={this.state.message}/>
         <FilterField filter={this.state.filter} handleFilterChange={this.handleFilterChange}/>
         <h2>Lisää uusi</h2>
         <NewPersonForm newName={this.state.newName}
