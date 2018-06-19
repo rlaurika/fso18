@@ -1,29 +1,28 @@
 import React from 'react';
 import personService from './services/persons'
 
-const PersonTableItem = (props) => {
-  const name = props.name
-  const number = props.number
-
+const PersonTableItem = ({ name, number, delHandler }) => {
   return (
     <tr>
       <td>{name}</td>
       <td>{number}</td>
+      <td><button name="del_button" onClick={delHandler}>poista</button></td>
     </tr>
   )
 }
 
-const PersonTable = (props) => {
-  const persons = props.persons
-  const filter = props.filter
-
+const PersonTable = ({ persons, filter, delHandler }) => {
   return (
     <table>
       <tbody>
         {persons.filter(
           person => { return person.name.toLowerCase().includes(filter.toLowerCase()) }
         ).map(
-          person => <PersonTableItem key={person.name} name={person.name} number={person.number}/>)
+          person => <PersonTableItem
+                      key={person.name}
+                      name={person.name}
+                      number={person.number}
+                      delHandler={delHandler(person.id)}/>)
         }
       </tbody>
     </table>
@@ -102,6 +101,23 @@ class App extends React.Component {
     }
   }
 
+  deletePerson = (id) => {
+    return () => {
+      const personObject = this.state.persons.find(person => person.id === id)
+      const ok_to_delete = window.confirm(`Poistetaanko ${personObject.name}?`)
+
+      if (ok_to_delete) {
+        personService
+          .remove(id)
+          .then(() => {
+            this.setState({
+              persons: this.state.persons.filter(n => n.id !== id)
+            })
+          })
+      }
+    }
+  }
+
   handleNameChange = (event) => {
     this.setState({ newName: event.target.value })
   }
@@ -126,7 +142,10 @@ class App extends React.Component {
                        handleNameChange={this.handleNameChange}
                        handleNumberChange={this.handleNumberChange}/>
         <h2>Numerot</h2>
-        <PersonTable persons={this.state.persons} filter={this.state.filter}/>
+        <PersonTable
+          persons={this.state.persons}
+          filter={this.state.filter}
+          delHandler={this.deletePerson}/>
       </div>
     )
   }
