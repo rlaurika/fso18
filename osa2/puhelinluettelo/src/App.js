@@ -107,9 +107,8 @@ class App extends React.Component {
         personService
           .update(person_to_update, personObject)
           .then(newPerson => {
-            const persons = this.state.persons.filter(n => n.id !== person_to_update)
             this.setState({
-              persons: persons.concat(newPerson),
+              persons: this.state.persons.map(person => person.id === person_to_update ? newPerson : person),
               newName: '',
               newNumber: ''
             })
