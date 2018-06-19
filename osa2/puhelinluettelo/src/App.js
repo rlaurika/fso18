@@ -79,11 +79,12 @@ class App extends React.Component {
       number: this.state.newNumber
     }
 
-    let addName = true;
+    let addName = true
+    let person_to_update = ''
 
     this.state.persons.forEach(function(item, index, array) {
       if (item.name === personObject.name) {
-        alert('Nimi on jo lisätty');
+        person_to_update = item.id
         addName = false;
       }
     })
@@ -98,6 +99,22 @@ class App extends React.Component {
             newNumber: ''
           })
         })
+    } else {
+      const ok_to_replace =
+        window.confirm(`${personObject.name} on jo luettelossa, korvataanko vanha numero uudella?`)
+
+      if (ok_to_replace) {
+        personService
+          .update(person_to_update, personObject)
+          .then(newPerson => {
+            const persons = this.state.persons.filter(n => n.id !== person_to_update)
+            this.setState({
+              persons: persons.concat(newPerson),
+              newName: '',
+              newNumber: ''
+            })
+          })
+      }
     }
   }
 
