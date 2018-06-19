@@ -31,7 +31,7 @@ const PersonTable = ({ persons, filter, delHandler }) => {
           person => { return person.name.toLowerCase().includes(filter.toLowerCase()) }
         ).map(
           person => <PersonTableItem
-                      key={person.name}
+                      key={person.id}
                       name={person.name}
                       number={person.number}
                       delHandler={delHandler(person.id)}/>)
@@ -133,6 +133,18 @@ class App extends React.Component {
             setTimeout (() => {
               this.setState({message: null})
             }, 5000)
+          })
+          .catch(error => {
+            personService
+              .create(personObject)
+              .then(newPerson => {
+                this.setState({
+                  persons: this.state.persons.map(person => person.id === person_to_update ? newPerson : person),
+                  newName: '',
+                  newNumber: '',
+                  message: `Päivitettiin henkilön ${newPerson.name} tiedot`
+                })
+              })
           })
       }
     }
