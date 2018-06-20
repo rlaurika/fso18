@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
 
 let persons = [
   {
@@ -28,7 +30,6 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-  console.log('Request from the following agent: ', request.get('User-Agent'))
   response.json(persons)
 })
 
