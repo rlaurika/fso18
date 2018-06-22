@@ -28,3 +28,11 @@ The API is here:
 https://phonebook-fso18.rahtiapp.fi/api/persons
 
 This is hosted on CSC's Rahti platform: https://rahti.csc.fi
+
+## Backup example deployment
+
+Here's a backup deployment of the application hosted in OpenShift Online:
+https://fso18-fso18.193b.starter-ca-central-1.openshiftapps.com/
+
+And here's the API for the backup deployment:
+https://fso18-fso18.193b.starter-ca-central-1.openshiftapps.com/api/persons
