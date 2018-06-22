@@ -1,7 +1,9 @@
-# Phonebook backend app
+# Phonebook app
 
-This is a super simple API that serves some phonebook data (name, number).
-Made as an exercise for the University of Helsinki Full stack open 2018 course:
+This is a super simple API and a frontend that serves some phonebook data
+(name, number). Made as an exercise for the University of Helsinki Full
+stack open 2018 course:
+
 http://mooc.fi/courses/2018/fullstack/
 
 ## Deploying in OpenShift
@@ -20,6 +22,9 @@ oc create route edge --hostname=<hostname> --service=fso18
 ## Example deployment
 
 You can find this hosted here:
-https://phonebook-backend-fso18.rahtiapp.fi/api/persons
+https://phonebook-fso18.rahtiapp.fi
+
+The API is here:
+https://phonebook-fso18.rahtiapp.fi/api/persons
 
 This is hosted on CSC's Rahti platform: https://rahti.csc.fi
