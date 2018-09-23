@@ -91,15 +91,16 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({error: 'name must be unique'})
   }
 
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: Math.floor(Math.random() * Math.floor(10000000))
-  }
+    number: body.number
+  })
 
-  persons = persons.concat(person)
-
-  response.json(person)
+  person
+    .save()
+    .then(savedPerson => {
+      response.json(Person.format(savedPerson))
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
