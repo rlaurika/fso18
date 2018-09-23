@@ -8,6 +8,8 @@ morgan.token('content', function getContent (req) {
   return JSON.stringify(req.body)
 })
 
+const Person = require('./models/person')
+
 app.use(express.static('build'))
 app.use(cors())
 app.use(bodyParser.json())
@@ -37,7 +39,11 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person
+    .find({})
+    .then(people => {
+      response.json(people)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
