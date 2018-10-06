@@ -38,6 +38,7 @@ let persons = [
   }
 ]
 
+// Get all people in the phonebook
 app.get('/api/persons', (request, response) => {
   Person
     .find({})
@@ -46,6 +47,7 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
+// Get person by id
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   const person = persons.find(person => person.id === id)
@@ -57,6 +59,7 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
+// Print information on phonebook
 app.get('/info', (req, res) => {
   const date = new Date()
   const page = `
@@ -76,6 +79,7 @@ app.get('/info', (req, res) => {
   res.send(page)
 })
 
+// Add new person
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
@@ -103,6 +107,27 @@ app.post('/api/persons', (request, response) => {
     })
 })
 
+// Modify existing person
+app.put('/api/persons/:id', (request, response) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(request.params.id, person, {new: true})
+    .then(updatedPerson => {
+      response.json(Person.format(updatedPerson))
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id'})
+    })
+})
+
+// Delete person by id
 app.delete('/api/persons/:id', (request, response) => {
   Person
     .findByIdAndRemove(request.params.id)
