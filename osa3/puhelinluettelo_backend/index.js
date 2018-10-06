@@ -49,34 +49,43 @@ app.get('/api/persons', (request, response) => {
 
 // Get person by id
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  Person
+    .findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(Person.format(person))
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id'})
+    })
 })
 
 // Print information on phonebook
 app.get('/info', (req, res) => {
   const date = new Date()
-  const page = `
-    <!DOCTYPE html>
-    <html lang="fi">
-      <head>
-        <meta charset="utf-8">
-        <title>Puhelinluettelon info</title>
-      </head>
-      <body>
-        <p>puhelinluettelossa ${persons.length} henkilön tiedot</p>
-        <p>${date}</p>
-      </body>
-    </html>
-  `
 
-  res.send(page)
+  Person
+  .find({})
+  .then(people => {
+    const page = `
+      <!DOCTYPE html>
+      <html lang="fi">
+        <head>
+          <meta charset="utf-8">
+          <title>Puhelinluettelon info</title>
+        </head>
+        <body>
+          <p>puhelinluettelossa ${people.length} henkilön tiedot</p>
+          <p>${date}</p>
+        </body>
+      </html>
+    `
+    res.send(page)
+  })
 })
 
 // Add new person
