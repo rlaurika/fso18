@@ -15,29 +15,6 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url :content :status :res[content-length] - :response-time ms'))
 
-let persons = [
-  {
-    "name": "Arto Hellas",
-    "number": "040-123456",
-    "id": 1
-  },
-  {
-    "name": "Martti Tienari",
-    "number": "040-123456",
-    "id": 2
-  },
-  {
-    "name": "Arto Järvinen",
-    "number": "040-123456",
-    "id": 3
-  },
-  {
-    "name": "Lea Kutvonen",
-    "number": "040-123456",
-    "id": 4
-  }
-]
-
 // Get all people in the phonebook
 app.get('/api/persons', (request, response) => {
   Person
@@ -100,19 +77,25 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({error: 'number missing'})
   }
 
-  if (persons.some(person => body.name === person.name)) {
-    return response.status(400).json({error: 'name must be unique'})
-  }
+  Person
+    .find({ name: body.name })
+    .then(person => {
+      if (person.length >= 1) {
+        return response.status(409).json(
+          {error: 'a person called '+body.name+' already exists in the phonebook'}
+        )
+      } else {
+        const person = new Person({
+          name: body.name,
+          number: body.number
+        })
 
-  const person = new Person({
-    name: body.name,
-    number: body.number
-  })
-
-  person
-    .save()
-    .then(savedPerson => {
-      response.json(Person.format(savedPerson))
+        person
+          .save()
+          .then(savedPerson => {
+            response.json(Person.format(savedPerson))
+          })
+      }
     })
 })
 
