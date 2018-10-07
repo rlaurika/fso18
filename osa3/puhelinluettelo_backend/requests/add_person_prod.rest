@@ -1,0 +1,7 @@
+POST https://phonebook-fso18.rahtiapp.fi/api/persons
+content-type: application/json
+
+{
+  "name": "Teemu Teräs",
+  "number": "050-1111"
+}
