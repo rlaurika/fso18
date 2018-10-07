@@ -37,7 +37,7 @@ app.get('/api/persons/:id', (request, response) => {
     })
     .catch(error => {
       console.log(error)
-      response.status(400).send({ error: 'malformatted id'})
+      response.status(400).send({ error: 'malformatted id' })
     })
 })
 
@@ -46,9 +46,9 @@ app.get('/info', (req, res) => {
   const date = new Date()
 
   Person
-  .find({})
-  .then(people => {
-    const page = `
+    .find({})
+    .then(people => {
+      const page = `
       <!DOCTYPE html>
       <html lang="fi">
         <head>
@@ -60,9 +60,9 @@ app.get('/info', (req, res) => {
           <p>${date}</p>
         </body>
       </html>
-    `
-    res.send(page)
-  })
+      `
+      res.send(page)
+    })
 })
 
 // Add new person
@@ -70,11 +70,11 @@ app.post('/api/persons', (request, response) => {
   const body = request.body
 
   if (body.name === undefined) {
-    return response.status(400).json({error: 'name missing'})
+    return response.status(400).json({ error: 'name missing' })
   }
 
   if (body.number === undefined) {
-    return response.status(400).json({error: 'number missing'})
+    return response.status(400).json({ error: 'number missing' })
   }
 
   Person
@@ -82,7 +82,7 @@ app.post('/api/persons', (request, response) => {
     .then(person => {
       if (person.length >= 1) {
         return response.status(409).json(
-          {error: 'a person called '+body.name+' already exists in the phonebook'}
+          { error: 'a person called '+body.name+' already exists in the phonebook' }
         )
       } else {
         const person = new Person({
@@ -109,13 +109,13 @@ app.put('/api/persons/:id', (request, response) => {
   }
 
   Person
-    .findByIdAndUpdate(request.params.id, person, {new: true})
+    .findByIdAndUpdate(request.params.id, person, { new: true })
     .then(updatedPerson => {
       response.json(Person.format(updatedPerson))
     })
     .catch(error => {
       console.log(error)
-      response.status(400).send({ error: 'malformatted id'})
+      response.status(400).send({ error: 'malformatted id' })
     })
 })
 
@@ -123,11 +123,11 @@ app.put('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
   Person
     .findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
-    .catch(error => {
-      response.status(400).send({ error: 'malformatted id'})
+    .catch(() => {
+      response.status(400).send({ error: 'malformatted id' })
     })
 })
 

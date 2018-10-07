@@ -27,11 +27,11 @@ function add_person(name, number) {
     number: number
   })
 
-  console.log('lisätään henkilö '+name+' numero '+number+' luetteloon');
+  console.log('lisätään henkilö '+name+' numero '+number+' luetteloon')
 
   person
     .save()
-    .then(response => {
+    .then(() => {
       mongoose.connection.close()
     })
 }
@@ -44,7 +44,7 @@ function get_people() {
     .then(result => {
       console.log('puhelinluettelo:')
       result.forEach(person => {
-        console.log(person.name+' '+person.number);
+        console.log(person.name+' '+person.number)
       })
       mongoose.connection.close()
     })
