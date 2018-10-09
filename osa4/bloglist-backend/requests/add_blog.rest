@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+  "title": "Why Software Is Eating the World",
+  "author": "Marc Andreessen",
+  "url": "https://a16z.com/2016/08/20/why-software-is-eating-the-world/",
+  "likes": 0
+}
