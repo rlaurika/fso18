@@ -54,9 +54,33 @@ const mostBlogs = (blogs) => {
   return { 'author': mostProlificAuthor, 'blogs': authorBlogNumbers[mostProlificAuthor] }
 }
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return undefined
+
+  const nameReducer = (authors, blog) => {
+    if (blog.author in authors) {
+      authors[blog.author] += blog.likes
+    } else {
+      authors[blog.author] = blog.likes
+    }
+
+    return authors
+  }
+
+  const authorLikes = blogs.reduce(nameReducer, {})
+
+  const mostLikedAuthor = Object.keys(authorLikes)
+    .reduce((currMostLikedAuthor, author) => {
+      return authorLikes[author] > authorLikes[currMostLikedAuthor] ? author : currMostLikedAuthor
+    })
+
+  return { 'author': mostLikedAuthor, 'likes': authorLikes[mostLikedAuthor] }
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }

@@ -153,3 +153,25 @@ describe('most blogs', () => {
     expect(listHelper.mostBlogs([])).toBe(undefined)
   })
 })
+
+describe('most likes', () => {
+  test('is determined correctly for a long list of blogs', () => {
+    const correctAuthor = {
+      'author': 'Edsger W. Dijkstra',
+      'likes': 17
+    }
+    expect(listHelper.mostLikes(lotsOfBlogs)).toEqual(correctAuthor)
+  })
+
+  test('is determined correctly for a list with only one blog', () => {
+    const correctAuthor = {
+      'author': 'Edsger W. Dijkstra',
+      'likes': 5
+    }
+    expect(listHelper.mostLikes(listWithOneBlog)).toEqual(correctAuthor)
+  })
+
+  test('is determined to be undefined for an empty list', () => {
+    expect(listHelper.mostLikes([])).toBe(undefined)
+  })
+})
