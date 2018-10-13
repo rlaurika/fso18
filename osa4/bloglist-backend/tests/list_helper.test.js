@@ -129,3 +129,27 @@ describe('favorite blog', () => {
     expect(listHelper.favoriteBlog(listWithOneBlog)).toEqual(correctFavoriteBlog)
   })
 })
+
+describe('most blogs', () => {
+  test('in a long list of blogs is determined correctly', () => {
+    const correctAuthor = {
+      'author': 'Robert C. Martin',
+      'blogs': 3
+    }
+
+    expect(listHelper.mostBlogs(lotsOfBlogs)).toEqual(correctAuthor)
+  })
+
+  test('of a list of one blog is correct', () => {
+    const correctAuthor = {
+      'author': 'Edsger W. Dijkstra',
+      'blogs': 1
+    }
+
+    expect(listHelper.mostBlogs(listWithOneBlog)).toEqual(correctAuthor)
+  })
+
+  test('of an empty list is undefined', () => {
+    expect(listHelper.mostBlogs([])).toBe(undefined)
+  })
+})
