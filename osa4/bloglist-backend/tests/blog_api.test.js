@@ -139,6 +139,36 @@ describe('add new blog', () => {
     expect(result.body.likes).toBeDefined()
     expect(result.body.likes).toBe(0)
   })
+
+  test('returns HTTP 400 when no title is given in request', async () => {
+    const newBlog = {
+      'author': 'Martin Fowler',
+      'url': 'https://martinfowler.com/articles/copyright-api.html'
+    }
+
+    const result = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body).toEqual({ error: 'title field is mandatory' })
+  })
+
+  test('returns HTTP 400 when no URL is given in request', async () => {
+    const newBlog = {
+      'title': 'APIs should not be copyrightable',
+      'author': 'Martin Fowler'
+    }
+
+    const result = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body).toEqual({ error: 'url field is mandatory' })
+  })
 })
 
 afterAll(() => {
