@@ -122,6 +122,23 @@ describe('add new blog', () => {
     expect(blogTitles).toContain('A Cherry Picker\'s Guide to Doctor Who')
     expect(blogsAfterAdd.body.length).toBe(blogsBeforeAdd.body.length + 1)
   })
+
+  test('adds the likes field if it is missing', async () => {
+    const newBlog = {
+      'title': 'APIs should not be copyrightable',
+      'author': 'Martin Fowler',
+      'url': 'https://martinfowler.com/articles/copyright-api.html'
+    }
+
+    const result = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.likes).toBeDefined()
+    expect(result.body.likes).toBe(0)
+  })
 })
 
 afterAll(() => {
