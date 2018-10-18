@@ -77,6 +77,53 @@ describe('get all blogs', () => {
   })
 })
 
+describe('add new blog', () => {
+  test('adds new blog', async () => {
+    const newBlog = {
+      'title': 'Why Software Is Eating the World',
+      'author': 'Marc Andreessen',
+      'url': 'https://a16z.com/2016/08/20/why-software-is-eating-the-world/',
+      'likes': 0
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const allBlogs = await api.get('/api/blogs')
+
+    const titles = allBlogs.body.map(blog => blog.title)
+
+    expect(titles).toContain('Why Software Is Eating the World')
+  })
+
+  test('increments number of blogs by one', async () => {
+    const newBlog = {
+      'title': 'A Cherry Picker\'s Guide to Doctor Who',
+      'author': 'Martin Fowler',
+      'url': 'https://martinfowler.com/articles/doctor-who.html',
+      'likes': 0
+    }
+
+    const blogsBeforeAdd = await api.get('/api/blogs')
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterAdd = await api.get('/api/blogs')
+
+    const blogTitles = blogsAfterAdd.body.map(blog => blog.title)
+
+    expect(blogTitles).toContain('A Cherry Picker\'s Guide to Doctor Who')
+    expect(blogsAfterAdd.body.length).toBe(blogsBeforeAdd.body.length + 1)
+  })
+})
+
 afterAll(() => {
   server.close()
 })
