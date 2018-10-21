@@ -140,6 +140,73 @@ describe('delete blog', () => {
   })
 })
 
+describe('update blog', () => {
+  test('updates number of likes', async () => {
+    const blogsBeforeUpdate = await blogsInDb()
+
+    const blogToUpdate = blogsBeforeUpdate[0]
+
+    const blogUpdate = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: 15,
+    }
+
+    const updatedBlogFromApi = await api
+      .put(`/api/blogs/${blogToUpdate._id}`)
+      .send(blogUpdate)
+      .expect(200)
+
+    const blogsAfterUpdate = await blogsInDb()
+
+    const updatedBlogFromDb = blogsAfterUpdate[0]
+
+    expect(updatedBlogFromApi.body.likes).toBe(15)
+    expect(updatedBlogFromDb.likes).toBe(15)
+  })
+
+  test('does not change total number of blogs', async () => {
+    const blogsBeforeUpdate = await blogsInDb()
+
+    const blogToUpdate = blogsBeforeUpdate[1]
+
+    const blogUpdate = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: 30,
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate._id}`)
+      .send(blogUpdate)
+      .expect(200)
+
+    const blogsAfterUpdate = await blogsInDb()
+
+    expect(blogsBeforeUpdate.length).toBe(blogsAfterUpdate.length)
+  })
+
+  test('return 400 on bad id', async () => {
+    const blogsBeforeUpdate = await blogsInDb()
+
+    const blogToUpdate = blogsBeforeUpdate[1]
+
+    const blogUpdate = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: 30,
+    }
+
+    await api
+      .put('/api/blogs/5bbce02555')
+      .send(blogUpdate)
+      .expect(400)
+  })
+})
+
 afterAll(() => {
   server.close()
 })
