@@ -119,6 +119,27 @@ describe('add new blog', () => {
   })
 })
 
+describe('delete blog', () => {
+  test('deletes blog', async () => {
+    const allBlogsBeforeDelete = await blogsInDb()
+
+    const blogToDelete = allBlogsBeforeDelete[0]
+    const blogIdToDelete = blogToDelete._id
+    const blogTitleToDelete = blogToDelete.title
+
+    await api
+      .delete(`/api/blogs/${blogIdToDelete}`)
+      .expect(204)
+
+    const allBlogsAfterDelete = await blogsInDb()
+
+    const titlesAfterDelete = allBlogsAfterDelete.map(blog => blog.title)
+
+    expect(titlesAfterDelete).not.toContain(blogTitleToDelete)
+    expect(allBlogsBeforeDelete.length).toBe(allBlogsAfterDelete.length+1)
+  })
+})
+
 afterAll(() => {
   server.close()
 })
