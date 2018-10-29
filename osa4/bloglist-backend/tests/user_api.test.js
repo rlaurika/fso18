@@ -97,6 +97,18 @@ describe('create new user', () => {
   })
 })
 
+describe('get all users', () => {
+  test('gets a list of users', async () => {
+    const response = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const usernames = response.body.map(user => user.username)
+    expect(usernames).toContain('ddev')
+  })
+})
+
 afterAll(() => {
   server.close()
 })

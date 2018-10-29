@@ -1,34 +1,44 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 // Get all blogs
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog
+    .find({})
+    .populate('user', { username: 1, name: 1 })
+
   response.json(blogs)
 })
 
 // Add new blog
 blogsRouter.post('/', async (request, response) => {
   try {
-    let blog = new Blog(request.body)
+    const body = request.body
 
-    if (typeof(blog.title) === 'undefined') {
+    if (typeof(body.title) === 'undefined') {
       return response.status(400).json({ error: 'title field is mandatory' })
     }
 
-    if (typeof(blog.url) === 'undefined') {
+    if (typeof(body.url) === 'undefined') {
       return response.status(400).json({ error: 'url field is mandatory' })
     }
 
-    if (typeof(blog.likes) === 'undefined') {
-      blog = new Blog({
-        title: blog.title,
-        author: blog.author,
-        url: blog.url,
-        likes: 0
-      })
-    }
+    // Model.findOne with no conditions gets a random user from the DB
+    // TODO: Find a proper user here and not a random one
+    const user = await User.findOne()
+
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes === undefined ? 0 : body.likes,
+      user: user._id
+    })
+
     const result = await blog.save()
+    user.blogs = user.blogs.concat(result._id)
+    await user.save()
 
     response.status(201).json(result)
   } catch (exception) {
