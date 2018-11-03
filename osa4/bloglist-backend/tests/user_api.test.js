@@ -109,6 +109,37 @@ describe('get all users', () => {
   })
 })
 
+describe('user login', () => {
+  test('works for valid user', async () => {
+    const login = {
+      username: 'ddev',
+      password: 'supersecret'
+    }
+
+    const loginResponse = await api
+      .post('/api/login')
+      .send(login)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(Object.keys(loginResponse.body)).toContainEqual([ 'token', 'username', 'user' ])
+  })
+
+  test('denies invalid user', async () => {
+    const login = {
+      username: 'ddev',
+      password: 'supersecret'
+    }
+
+    const loginResponse = await api
+      .post('/api/login')
+      .send(login)
+      .expect(401)
+
+    expect(loginResponse.body).toContainEqual({ error: 'invalid username or password' })
+  })
+})
+
 afterAll(() => {
   server.close()
 })
