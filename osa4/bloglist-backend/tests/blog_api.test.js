@@ -3,6 +3,7 @@ const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const { initialBlogs, blogsInDb } = require('./test_util')
+let authHeader = ''
 
 beforeAll(async () => {
   await Blog.deleteMany({})
@@ -10,6 +11,33 @@ beforeAll(async () => {
   const blogObjects = initialBlogs.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
+
+  // Create a test user for tests that require credentials
+  const newUser = {
+    username: 'exer',
+    name: 'Erin Example',
+    adult: true,
+    password: 'notsosecret'
+  }
+
+  await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const loginCreds = {
+    'username': 'exer',
+    'password': 'notsosecret'
+  }
+
+  const loginResponse = await api
+    .post('/api/login')
+    .set('content-type', 'application/json')
+    .send(loginCreds)
+
+  // This will be used whenever authentication is required
+  authHeader = 'Bearer '+loginResponse.body.token
 })
 
 describe('get all blogs', () => {
@@ -39,6 +67,7 @@ describe('add new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', authHeader)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -62,6 +91,7 @@ describe('add new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', authHeader)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -80,6 +110,7 @@ describe('add new blog', () => {
 
     const result = await api
       .post('/api/blogs')
+      .set('Authorization', authHeader)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -96,6 +127,7 @@ describe('add new blog', () => {
 
     const result = await api
       .post('/api/blogs')
+      .set('Authorization', authHeader)
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/)
@@ -111,6 +143,7 @@ describe('add new blog', () => {
 
     const result = await api
       .post('/api/blogs')
+      .set('Authorization', authHeader)
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/)

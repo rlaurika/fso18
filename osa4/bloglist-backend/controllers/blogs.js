@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -15,6 +16,17 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   try {
     const body = request.body
+    const token = request.token
+
+    if (token === null) {
+      return response.status(401).json({ error: 'missing token' })
+    }
+
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'invalid token' })
+    }
 
     if (typeof(body.title) === 'undefined') {
       return response.status(400).json({ error: 'title field is mandatory' })
@@ -24,9 +36,7 @@ blogsRouter.post('/', async (request, response) => {
       return response.status(400).json({ error: 'url field is mandatory' })
     }
 
-    // Model.findOne with no conditions gets a random user from the DB
-    // TODO: Find a proper user here and not a random one
-    const user = await User.findOne()
+    const user = await User.findById(decodedToken.id)
 
     const blog = new Blog({
       title: body.title,
@@ -42,7 +52,13 @@ blogsRouter.post('/', async (request, response) => {
 
     response.status(201).json(result)
   } catch (exception) {
-    response.status(500).json({ error: 'unexpected error' })
+    console.log(exception.name+': '+exception.message)
+
+    if (exception.name === 'JsonWebTokenError') {
+      response.status(401).json({ error: exception.message })
+    } else {
+      response.status(500).json({ error: 'unexpected error' })
+    }
   }
 })
 

@@ -1,5 +1,6 @@
 POST http://localhost:3001/api/blogs
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImN0ZXN0IiwiaWQiOiI1YmRmMjFiNmZlODhjZDUwNmI1MGI5YjciLCJpYXQiOjE1NDEzNTE0NzF9.P1QrAJu6qUowAkIjCpzTnP_FfDY8An5JuR5NA2B9YdY
 
 {
   "title": "Why Software Is Eating the World",
