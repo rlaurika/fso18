@@ -1,3 +1,6 @@
+const supertest = require('supertest')
+const { app } = require('../index')
+const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
@@ -83,6 +86,33 @@ const usersInDb = async () => {
   return users
 }
 
+const createUserAndAuthenticate = async (username, name, password) => {
+  const newUser = {
+    username: username,
+    name: name,
+    adult: true,
+    password: password
+  }
+
+  await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const loginCreds = {
+    'username': username,
+    'password': password
+  }
+
+  const loginResponse = await api
+    .post('/api/login')
+    .set('content-type', 'application/json')
+    .send(loginCreds)
+
+  return 'Bearer '+loginResponse.body.token
+}
+
 module.exports = {
-  initialBlogs, initialUsers, blogsInDb, usersInDb
+  initialBlogs, initialUsers, blogsInDb, usersInDb, createUserAndAuthenticate
 }

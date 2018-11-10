@@ -3,6 +3,25 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+function TokenDecodeError(message) {
+  this.message = message
+  this.name = 'TokenDecodeError'
+}
+
+const decodeToken = (token) => {
+  if (token === null) {
+    throw new TokenDecodeError('missing token')
+  }
+
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+
+  if (!decodedToken.id) {
+    throw new TokenDecodeError('invalid token')
+  }
+
+  return decodedToken
+}
+
 // Get all blogs
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -16,17 +35,8 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   try {
     const body = request.body
-    const token = request.token
 
-    if (token === null) {
-      return response.status(401).json({ error: 'missing token' })
-    }
-
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'invalid token' })
-    }
+    const decodedToken = decodeToken(request.token)
 
     if (typeof(body.title) === 'undefined') {
       return response.status(400).json({ error: 'title field is mandatory' })
@@ -54,7 +64,7 @@ blogsRouter.post('/', async (request, response) => {
   } catch (exception) {
     console.log(exception.name+': '+exception.message)
 
-    if (exception.name === 'JsonWebTokenError') {
+    if (exception.name === 'JsonWebTokenError' || exception.name === 'TokenDecodeError') {
       response.status(401).json({ error: exception.message })
     } else {
       response.status(500).json({ error: 'unexpected error' })
@@ -65,10 +75,23 @@ blogsRouter.post('/', async (request, response) => {
 // Delete blog by id
 blogsRouter.delete('/:id', async (request, response) => {
   try {
-    await Blog.findByIdAndRemove(request.params.id)
+    const decodedToken = decodeToken(request.token)
+
+    const blogToDelete = await Blog.findById(request.params.id)
+
+    if (blogToDelete.user.toString() === decodedToken.id) {
+      await Blog.findOneAndDelete({ _id: request.params.id })
+    } else {
+      return response.status(401).json({ error: 'unauthorized to remove blog' })
+    }
+
     response.status(204).end()
   } catch (exception) {
-    response.status(400).send({ error: 'malformatted id' })
+    if (exception.name === 'JsonWebTokenError' || exception.name === 'TokenDecodeError') {
+      response.status(401).json({ error: exception.message })
+    } else {
+      response.status(400).send({ error: 'malformatted id' })
+    }
   }
 })
 

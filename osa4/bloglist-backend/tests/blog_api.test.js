@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb } = require('./test_util')
+const { initialBlogs, blogsInDb, createUserAndAuthenticate } = require('./test_util')
 let authHeader = ''
 
 beforeAll(async () => {
@@ -12,32 +12,8 @@ beforeAll(async () => {
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
 
-  // Create a test user for tests that require credentials
-  const newUser = {
-    username: 'exer',
-    name: 'Erin Example',
-    adult: true,
-    password: 'notsosecret'
-  }
-
-  await api
-    .post('/api/users')
-    .send(newUser)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  const loginCreds = {
-    'username': 'exer',
-    'password': 'notsosecret'
-  }
-
-  const loginResponse = await api
-    .post('/api/login')
-    .set('content-type', 'application/json')
-    .send(loginCreds)
-
   // This will be used whenever authentication is required
-  authHeader = 'Bearer '+loginResponse.body.token
+  authHeader = await createUserAndAuthenticate('exer', 'Erin Example', 'notsosecret')
 })
 
 describe('get all blogs', () => {
@@ -150,18 +126,62 @@ describe('add new blog', () => {
 
     expect(result.body).toEqual({ error: 'url field is mandatory' })
   })
+
+  test('return HTTP 401 when no auth header is present', async () => {
+    const newBlog = {
+      'title': 'APIs should not be copyrightable',
+      'author': 'Martin Fowler'
+    }
+
+    const result = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body).toEqual({ error: 'missing token' })
+  })
 })
 
 describe('delete blog', () => {
-  test('deletes blog', async () => {
+  test('requires token to be set', async () => {
     const allBlogsBeforeDelete = await blogsInDb()
 
     const blogToDelete = allBlogsBeforeDelete[0]
     const blogIdToDelete = blogToDelete._id
-    const blogTitleToDelete = blogToDelete.title
+
+    const result = await api
+      .delete(`/api/blogs/${blogIdToDelete}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body).toEqual({ error: 'missing token' })
+  })
+
+  test('deletes blog', async () => {
+    // Add a blog for us to delete
+    const newBlog = {
+      'title': 'What does Stack Overflow want to be when it grows up?',
+      'author': 'Jeff Atwood',
+      'url': 'https://blog.codinghorror.com/what-does-stack-overflow-want-to-be-when-it-grows-up/',
+      'likes': 0
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', authHeader)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const allBlogsBeforeDelete = await blogsInDb()
+
+    const blogIdToDelete = response.body._id
+    const blogTitleToDelete = response.body.title
 
     await api
       .delete(`/api/blogs/${blogIdToDelete}`)
+      .set('Authorization', authHeader)
       .expect(204)
 
     const allBlogsAfterDelete = await blogsInDb()
@@ -170,6 +190,42 @@ describe('delete blog', () => {
 
     expect(titlesAfterDelete).not.toContain(blogTitleToDelete)
     expect(allBlogsBeforeDelete.length).toBe(allBlogsAfterDelete.length+1)
+  })
+
+  test('does not let you delete blogs added by others', async () => {
+    const differentAuthHeader = await createUserAndAuthenticate('rex', 'Rex Mundi', 'king')
+
+    const newBlog = {
+      'title': 'There is no longer any such thing as Computer Security',
+      'author': 'Jeff Atwood',
+      'url': 'https://blog.codinghorror.com/there-is-no-longer-any-such-thing-as-computer-security/',
+      'likes': 0
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', authHeader)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogIdToDelete = response.body._id
+    const blogTitleToDelete = response.body.title
+
+    const allBlogsBeforeDelete = await blogsInDb()
+
+    const expectedDeleteFailureResponse = await api
+      .delete(`/api/blogs/${blogIdToDelete}`)
+      .set('Authorization', differentAuthHeader)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    const allBlogsAfterDelete = await blogsInDb()
+    const titlesAfterDelete = allBlogsAfterDelete.map(blog => blog.title)
+
+    expect(expectedDeleteFailureResponse.body).toEqual({ error: 'unauthorized to remove blog' })
+    expect(titlesAfterDelete).toContain(blogTitleToDelete)
+    expect(allBlogsBeforeDelete.length).toBe(allBlogsAfterDelete.length)
   })
 })
 
