@@ -3,6 +3,7 @@ import React from 'react'
 const LoginForm = ({ doLogin, handleLoginFieldChange }) => {
   return (
     <form method="post" onSubmit={doLogin}>
+      <h2>Login to the Bloglist</h2>
       <div>
         <label htmlFor="username">Username: </label>
         <input

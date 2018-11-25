@@ -2,6 +2,7 @@ import React from 'react'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import NewBlogForm from './components/NewBlogForm'
+import NotificationBox from './components/NotificationBox'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -15,7 +16,9 @@ class App extends React.Component {
       user: null,
       newBlogTitle: '',
       newBlogAuthor: '',
-      newBlogURL: ''
+      newBlogURL: '',
+      notification: null,
+      notificationClass: null
     }
   }
 
@@ -32,6 +35,14 @@ class App extends React.Component {
     }
   }
 
+  showNotification = ({ notification, notificationClass }) => {
+    this.setState({ notification: notification,
+                    notificationClass: notificationClass })
+    setTimeout(() => {
+      this.setState({ notification: null, notificationClass: null })
+    }, 3000)
+  }
+
   doLogin = async (event) => {
     event.preventDefault()
     try {
@@ -44,7 +55,8 @@ class App extends React.Component {
       this.setState({ username: '', password: '', user })
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
     } catch (exception) {
-      alert('invalid username or password')
+      this.showNotification({ notification: 'Invalid username or password',
+                              notificationClass: 'error' })
     }
   }
 
@@ -68,8 +80,12 @@ class App extends React.Component {
                       newBlogAuthor: '',
                       newBlogURL: '',
                       blogs: this.state.blogs.concat(response) })
+
+      this.showNotification({ notification: `Added new blog ${response.title} by ${response.author}`,
+                              notificationClass: 'notice' })
     } catch (exception) {
-      alert('could not add new blog')
+      this.showNotification({ notification: 'Could not add new blog',
+                              notificationClass: 'error' })
     }
   }
 
@@ -89,26 +105,32 @@ class App extends React.Component {
     }
 
     return (
-      ( this.state.user === null ?
-        <div>
-          <LoginForm
-            doLogin={this.doLogin}
-            handleLoginFieldChange={this.handleLoginFieldChange}
-          />
-        </div> :
-        <div>
+      <div>
+        <NotificationBox
+          notificationClass={this.state.notificationClass}
+          notification={this.state.notification}
+        />
+        { this.state.user === null ?
           <div>
-            <p>{this.state.user.name} logged in</p>
-            <button onClick={this.doLogout}>log out</button>
+            <LoginForm
+              doLogin={this.doLogin}
+              handleLoginFieldChange={this.handleLoginFieldChange}
+            />
+          </div> :
+          <div>
+            <div>
+              <p>{this.state.user.name} logged in</p>
+              <button onClick={this.doLogout}>log out</button>
+            </div>
+            <NewBlogForm
+              newBlog={newBlog}
+              createNewBlog={this.createNewBlog}
+              handleNewBlogFieldChange={this.handleNewBlogFieldChange}
+            />
+            <BlogList blogs={ this.state.blogs }/>
           </div>
-          <NewBlogForm
-            newBlog={newBlog}
-            createNewBlog={this.createNewBlog}
-            handleNewBlogFieldChange={this.handleNewBlogFieldChange}
-          />
-          <BlogList blogs={ this.state.blogs }/>
-        </div>
-      )
+        }
+      </div>
     );
   }
 }
