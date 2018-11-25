@@ -1,6 +1,7 @@
 import React from 'react'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import NewBlogForm from './components/NewBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,7 +12,10 @@ class App extends React.Component {
       blogs: [],
       username: '',
       password: '',
-      user: null
+      user: null,
+      newBlogTitle: '',
+      newBlogAuthor: '',
+      newBlogURL: ''
     }
   }
 
@@ -49,11 +53,41 @@ class App extends React.Component {
     this.setState({ user: null })
   }
 
+  createNewBlog = async (event) => {
+    event.preventDefault()
+    try {
+      const newBlog = {
+        title: this.state.newBlogTitle,
+        author: this.state.newBlogAuthor,
+        url: this.state.newBlogURL
+      }
+
+      const response = await blogService.create(newBlog)
+
+      this.setState({ newBlogTitle: '',
+                      newBlogAuthor: '',
+                      newBlogURL: '',
+                      blogs: this.state.blogs.concat(response) })
+    } catch (exception) {
+      alert('could not add new blog')
+    }
+  }
+
   handleLoginFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
 
+  handleNewBlogFieldChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value })
+  }
+
   render() {
+    const newBlog = {
+      title: this.state.newBlogTitle,
+      author: this.state.newBlogAuthor,
+      url: this.state.newBlogURL
+    }
+
     return (
       ( this.state.user === null ?
         <div>
@@ -67,6 +101,11 @@ class App extends React.Component {
             <p>{this.state.user.name} logged in</p>
             <button onClick={this.doLogout}>log out</button>
           </div>
+          <NewBlogForm
+            newBlog={newBlog}
+            createNewBlog={this.createNewBlog}
+            handleNewBlogFieldChange={this.handleNewBlogFieldChange}
+          />
           <BlogList blogs={ this.state.blogs }/>
         </div>
       )
