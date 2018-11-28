@@ -90,6 +90,24 @@ class App extends React.Component {
     }
   }
 
+  likeBlog = (id) => {
+    return async () => {
+      try {
+        const blog = this.state.blogs.find(blog => blog._id === id)
+
+        const updatedBlog = { ...blog, likes: blog.likes+1 }
+
+        const response = await blogService.update(id, updatedBlog)
+        let updatedBlogs = this.state.blogs
+        updatedBlogs.splice(this.state.blogs.indexOf(blog), 1, response)
+        this.setState({ blogs: updatedBlogs })
+      } catch (exception) {
+        this.showNotification({ notification: `Could not like blog: ${exception}`,
+                                notificationClass: 'error' })
+      }
+    }
+  }
+
   handleLoginFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
@@ -130,7 +148,10 @@ class App extends React.Component {
                 handleNewBlogFieldChange={this.handleNewBlogFieldChange}
               />
             </Togglable>
-            <BlogList blogs={ this.state.blogs }/>
+            <BlogList
+              blogs={ this.state.blogs }
+              likeButtonHandler={this.likeBlog}
+            />
           </div>
         }
       </div>
