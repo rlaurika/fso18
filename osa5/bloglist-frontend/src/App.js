@@ -3,6 +3,7 @@ import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import NewBlogForm from './components/NewBlogForm'
 import NotificationBox from './components/NotificationBox'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -122,11 +123,13 @@ class App extends React.Component {
               <p>{this.state.user.name} logged in</p>
               <button onClick={this.doLogout}>log out</button>
             </div>
-            <NewBlogForm
-              newBlog={newBlog}
-              createNewBlog={this.createNewBlog}
-              handleNewBlogFieldChange={this.handleNewBlogFieldChange}
-            />
+            <Togglable buttonLabel="create new blog">
+              <NewBlogForm
+                newBlog={newBlog}
+                createNewBlog={this.createNewBlog}
+                handleNewBlogFieldChange={this.handleNewBlogFieldChange}
+              />
+            </Togglable>
             <BlogList blogs={ this.state.blogs }/>
           </div>
         }
