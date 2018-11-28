@@ -13,3 +13,31 @@
   margin-bottom: 15px;
   font-size: 20px;
 }
+
+.toggle-arrow {
+  font-size: 25px;
+  font-family: monospace;
+  -webkit-user-select: none;
+}
+
+.blog {
+  border: solid;
+  border-width: 1;
+  margin-bottom: 5px;
+}
+
+.like-button {
+  margin-left: 5px;
+}
+
+.blog-title {
+  display: flex;
+  align-items: center; /* align vertical */
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.blog-info-box {
+  margin-left: 20px;
+}
