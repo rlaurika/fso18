@@ -1,5 +1,6 @@
 import React from 'react'
 import Blog from './Blog'
+import PropTypes from 'prop-types'
 
 const BlogList = ({blogs, currentUser, likeButtonHandler, delButtonHandler}) => {
   const sortedBlogs = blogs.sort((a, b) => {
@@ -20,6 +21,13 @@ const BlogList = ({blogs, currentUser, likeButtonHandler, delButtonHandler}) => 
       )}
     </div>
   )
+}
+
+BlogList.propTypes = {
+  blogs: PropTypes.array.isRequired,
+  currentUser: PropTypes.string.isRequired,
+  likeButtonHandler: PropTypes.func.isRequired,
+  delButtonHandler: PropTypes.func.isRequired
 }
 
 export default BlogList
