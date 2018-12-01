@@ -15,6 +15,12 @@ class Blog extends React.Component {
   render() {
     const showWhenCollapsed = { display: this.state.collapsed ? '': 'none' }
     const showWhenNotCollapsed = { display: this.state.collapsed ? 'none': '' }
+
+    const showDelButton = {
+      display: !this.props.blog.user || this.props.currentUser === this.props.blog.user.username ?
+      '' : 'none'
+    }
+
     const adder = (this.props.blog.user ? this.props.blog.user.name : 'anonymous')
 
     return (
@@ -33,7 +39,7 @@ class Blog extends React.Component {
             like
           </button><br/>
           added by {adder}<br/>
-          <button
+          <button style={showDelButton}
             onClick={this.props.delButtonHandler}
             className="del-button">
             delete

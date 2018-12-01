@@ -30,6 +30,10 @@
   margin-left: 5px;
 }
 
+.del-button {
+  margin-bottom: 5px;
+}
+
 .blog-title {
   display: flex;
   align-items: center; /* align vertical */

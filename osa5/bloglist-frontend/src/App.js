@@ -179,7 +179,8 @@ class App extends React.Component {
               />
             </Togglable>
             <BlogList
-              blogs={ this.state.blogs }
+              blogs={this.state.blogs}
+              currentUser={this.state.user.username}
               likeButtonHandler={this.likeBlog}
               delButtonHandler={this.delBlog}
             />
