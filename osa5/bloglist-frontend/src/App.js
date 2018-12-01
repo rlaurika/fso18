@@ -116,6 +116,28 @@ class App extends React.Component {
     }
   }
 
+  delBlog = (id) => {
+    return async () => {
+      try {
+        const blog = this.state.blogs.find(blog => blog._id === id)
+
+        if (window.confirm(`Delete '${blog.title}' by ${blog.author}?`)) {
+          await blogService.remove(id)
+
+          const updatedBlogs = this.state.blogs.filter(blog => blog._id !== id)
+          this.setState({ blogs: updatedBlogs })
+
+          this.showNotification({ notification: `Deleted '${blog.title}' by ${blog.author}`,
+                                  notificationClass: 'notice' })
+        }
+      } catch (exception) {
+        const blog = this.state.blogs.find(blog => blog._id === id)
+        this.showNotification({ notification: `Not authorized to remove blog '${blog.title}' added by ${blog.user.name}`,
+                                notificationClass: 'error' })
+      }
+    }
+  }
+
   handleLoginFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
@@ -159,6 +181,7 @@ class App extends React.Component {
             <BlogList
               blogs={ this.state.blogs }
               likeButtonHandler={this.likeBlog}
+              delButtonHandler={this.delBlog}
             />
           </div>
         }

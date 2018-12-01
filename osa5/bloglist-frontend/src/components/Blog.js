@@ -15,6 +15,7 @@ class Blog extends React.Component {
   render() {
     const showWhenCollapsed = { display: this.state.collapsed ? '': 'none' }
     const showWhenNotCollapsed = { display: this.state.collapsed ? 'none': '' }
+    const adder = (this.props.blog.user ? this.props.blog.user.name : 'anonymous')
 
     return (
       <div className="blog">
@@ -31,7 +32,12 @@ class Blog extends React.Component {
             className="like-button">
             like
           </button><br/>
-          added by {this.props.blog.user.name}
+          added by {adder}<br/>
+          <button
+            onClick={this.props.delButtonHandler}
+            className="del-button">
+            delete
+          </button>
         </div>
       </div>
     )

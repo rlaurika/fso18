@@ -1,7 +1,7 @@
 import React from 'react'
 import Blog from './Blog'
 
-const BlogList = ({blogs, likeButtonHandler}) => {
+const BlogList = ({blogs, likeButtonHandler, delButtonHandler}) => {
   const sortedBlogs = blogs.sort((a, b) => {
     return b.likes - a.likes
   })
@@ -14,6 +14,7 @@ const BlogList = ({blogs, likeButtonHandler}) => {
           key={blog._id}
           blog={blog}
           likeButtonHandler={likeButtonHandler(blog._id)}
+          delButtonHandler={delButtonHandler(blog._id)}
         />
       )}
     </div>
