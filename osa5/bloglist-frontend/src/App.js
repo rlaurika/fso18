@@ -75,7 +75,15 @@ class App extends React.Component {
         url: this.state.newBlogURL
       }
 
-      const response = await blogService.create(newBlog)
+      let response = await blogService.create(newBlog)
+
+      const userId = response.user
+
+      response.user = {
+        _id: userId,
+        name: this.state.user.name,
+        username: this.state.user.username
+      }
 
       this.setState({ newBlogTitle: '',
                       newBlogAuthor: '',
@@ -97,9 +105,9 @@ class App extends React.Component {
 
         const updatedBlog = { ...blog, likes: blog.likes+1 }
 
-        const response = await blogService.update(id, updatedBlog)
+        await blogService.update(id, updatedBlog)
         let updatedBlogs = this.state.blogs
-        updatedBlogs.splice(this.state.blogs.indexOf(blog), 1, response)
+        updatedBlogs.splice(this.state.blogs.indexOf(blog), 1, updatedBlog)
         this.setState({ blogs: updatedBlogs })
       } catch (exception) {
         this.showNotification({ notification: `Could not like blog: ${exception}`,
