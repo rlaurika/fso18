@@ -33,4 +33,12 @@ describe.only('<SimpleBlog />', () => {
     const likesDiv = simpleBlogComponent.find('.likes')
     expect(likesDiv.text()).toContain(`blog has ${blog.likes} likes`)
   })
+
+  it('registers correct amount of clicks in its click handler', () => {
+    const button = simpleBlogComponent.find('button')
+    button.simulate('click')
+    button.simulate('click')
+
+    expect(mockClickHandler.mock.calls.length).toBe(2)
+  })
 })
