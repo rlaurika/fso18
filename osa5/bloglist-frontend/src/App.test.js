@@ -4,21 +4,52 @@ import App from './App'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import NewBlogForm from './components/NewBlogForm'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 
 describe('<App />', () => {
   let app
-  beforeAll(() => {
-    app = mount(<App />)
+
+  describe('when no user is logged in', () => {
+    beforeEach(() => {
+      app = mount(<App />)
+    })
+
+    it('renders only the login view', () => {
+      const loginFormComponents = app.find(LoginForm)
+      const blogListComponents = app.find(BlogList)
+      const newBlogFormComponents = app.find(NewBlogForm)
+
+      expect(loginFormComponents.length).toEqual(1)
+      expect(blogListComponents.length).toEqual(0)
+      expect(newBlogFormComponents.length).toEqual(0)
+    })
   })
 
-  it('renders only the login view when no user is logged in', () => {
-    const loginFormComponents = app.find(LoginForm)
-    const blogListComponents = app.find(BlogList)
-    const newBlogFormComponents = app.find(NewBlogForm)
+  describe('when a user is logged in', () => {
+    beforeEach(() => {
+      const user = {
+        username: 'ttester',
+        token: '1123581321',
+        name: 'Tom Tester'
+      }
 
-    expect(loginFormComponents.length).toEqual(1)
-    expect(blogListComponents.length).toEqual(0)
-    expect(newBlogFormComponents.length).toEqual(0)
+      localStorage.setItem('loggedInUser', JSON.stringify(user))
+      app = mount(<App />)
+    })
+
+    it('renders the list of blogs and the new blog form', () => {
+      app.update()
+
+      const loginFormComponents = app.find(LoginForm)
+      const blogListComponents = app.find(BlogList)
+      const newBlogFormComponents = app.find(NewBlogForm)
+      const blogComponents = app.find(Blog)
+
+      expect(loginFormComponents.length).toEqual(0)
+      expect(blogListComponents.length).toEqual(1)
+      expect(newBlogFormComponents.length).toEqual(1)
+      expect(blogComponents.length).toEqual(blogService.blogs.length)
+    })
   })
 })
