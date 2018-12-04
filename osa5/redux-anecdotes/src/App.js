@@ -1,7 +1,10 @@
 import React from 'react';
 
-
 class App extends React.Component {
+  voteHandler = (id) => () => {
+    this.props.store.dispatch({ type: 'VOTE', data: id })
+  }
+
   render() {
     const anecdotes = this.props.store.getState()
     return (
@@ -14,7 +17,7 @@ class App extends React.Component {
             </div>
             <div>
               has {anecdote.votes}
-              <button>vote</button>
+              <button onClick={this.voteHandler(anecdote.id)}>vote</button>
             </div>
           </div>
         )}
