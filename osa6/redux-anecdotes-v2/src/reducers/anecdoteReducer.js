@@ -34,4 +34,18 @@ const reducer = (store = initialState, action) => {
   return store
 }
 
+export const voting = (id) => {
+  return {
+    type: 'VOTE',
+    id
+  }
+}
+
+export const anecdoteCreation = (content) => {
+  return {
+    type: 'CREATE',
+    content
+  }
+}
+
 export default reducer
