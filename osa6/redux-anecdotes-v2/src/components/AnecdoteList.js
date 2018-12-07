@@ -13,7 +13,7 @@ class AnecdoteList extends React.Component {
             </div>
             <div>
               has {anecdote.votes}
-              <button onClick={() => 
+              <button onClick={() =>
                 this.props.store.dispatch({ type: 'VOTE', id: anecdote.id })
               }>
                 vote
