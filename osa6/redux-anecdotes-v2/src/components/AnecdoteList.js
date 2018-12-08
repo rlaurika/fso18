@@ -5,7 +5,7 @@ import { notificationSetting, notificationClearing } from '../reducers/notificat
 
 class AnecdoteList extends React.Component {
   handleVoting = (id) => () => {
-    const votedAnecdote = this.props.anecdotes.find(anecdote => anecdote.id === id)
+    const votedAnecdote = this.props.anecdotesToShow.find(anecdote => anecdote.id === id)
 
     this.props.voting(id)
     this.props.notificationSetting(`Voted for '${votedAnecdote.content}'`)
@@ -13,12 +13,9 @@ class AnecdoteList extends React.Component {
   }
 
   render() {
-    const anecdotes = this.props.anecdotes
-    const filter = this.props.filter
     return (
       <div>
-        {anecdotes
-          .filter(anecdote => anecdote.content.includes(filter))
+        {this.props.anecdotesToShow
           .sort((a, b) => b.votes - a.votes)
           .map(anecdote =>
             <div key={anecdote.id}>
@@ -38,10 +35,13 @@ class AnecdoteList extends React.Component {
   }
 }
 
+const anecdotesToShow = (anecdotes, filter) => {
+  return anecdotes.filter(anecdote => anecdote.content.includes(filter))
+}
+
 const mapStateToProps = (state) => {
   return {
-    anecdotes: state.anecdotes,
-    filter: state.filter
+    anecdotesToShow: anecdotesToShow(state.anecdotes, state.filter)
   }
 }
 
