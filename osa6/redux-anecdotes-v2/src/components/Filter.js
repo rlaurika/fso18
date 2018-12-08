@@ -1,9 +1,11 @@
 import React from 'react'
+import { filterSetting } from '../reducers/filterReducer'
 
 class Filter extends React.Component {
   handleChange = (event) => {
-    // input-kentän arvo muuttujassa event.target.value
+    this.props.store.dispatch(filterSetting(event.target.value))
   }
+
   render() {
     const style = {
       marginBottom: 10
