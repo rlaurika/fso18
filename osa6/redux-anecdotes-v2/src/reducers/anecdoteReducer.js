@@ -2,7 +2,7 @@ import anecdoteService from '../services/anecdotes'
 
 const reducer = (store = [], action) => {
   if (action.type==='VOTE') {
-    const old = store.filter(a => a.id !==action.id)
+    const old = store.filter(a => a.id !== action.id)
     const voted = store.find(a => a.id === action.id)
 
     return [...old, { ...voted, votes: voted.votes+1 } ]
@@ -19,9 +19,14 @@ const reducer = (store = [], action) => {
 }
 
 export const voting = (id) => {
-  return {
-    type: 'VOTE',
-    id
+  return async (dispatch) => {
+    const anecdotes = await anecdoteService.getAll()
+    const votedAnecdote = anecdotes.find(anecdote => anecdote.id === id)
+    await anecdoteService.update(id, { ...votedAnecdote, votes: votedAnecdote.votes + 1 })
+    dispatch({
+      type: 'VOTE',
+      id
+    })
   }
 }
 
