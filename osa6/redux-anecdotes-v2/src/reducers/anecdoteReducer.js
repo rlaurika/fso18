@@ -9,7 +9,7 @@ const reducer = (store = [], action) => {
   }
   if (action.type === 'CREATE') {
 
-    return [...store, action.content]
+    return [...store, action.data]
   }
   if (action.type === 'INIT_ANECDOTES') {
     return action.anecdotes
@@ -26,9 +26,12 @@ export const voting = (id) => {
 }
 
 export const anecdoteCreation = (content) => {
-  return {
-    type: 'CREATE',
-    content
+  return async (dispatch) => {
+    const newAnecdote = await anecdoteService.createNew(content)
+    dispatch({
+      type: 'CREATE',
+      data: newAnecdote
+    })
   }
 }
 
