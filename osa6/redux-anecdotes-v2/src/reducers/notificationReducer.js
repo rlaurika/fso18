@@ -22,4 +22,18 @@ export const notificationClearing = () => {
   }
 }
 
+export const notify = (notification, duration) => {
+  return async (dispatch) => {
+    dispatch({
+      type: 'SET_NOTIFICATION',
+      notification
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'UNSET_NOTIFICATION'
+      })
+    }, duration*1000)
+  }
+}
+
 export default reducer
