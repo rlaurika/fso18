@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
-import { ListGroup, ListGroupItem } from 'react-bootstrap'
+import { ListGroup, ListGroupItem, Grid, Row, Col } from 'react-bootstrap'
 
 const Menu = () => {
   const activeStyle = {
@@ -71,14 +71,25 @@ const Anecdote = ({ anecdote }) => (
 const About = () => (
   <div>
     <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
-    
-    <em>An anecdote is a brief, revealing account of an individual person or an incident. 
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself, 
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative. 
-      An anecdote is "a story with a point."</em>
+    <Grid>
+      <Row>
+        <Col sm={8} md={9}>
+          <p>According to Wikipedia:</p>
 
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+          <p><em>An anecdote is a brief, revealing account of an individual person or an incident. 
+            Occasionally humorous, anecdotes differ from jokes because their primary purpose is
+            not simply to provoke laughter but to reveal a truth more general than the brief tale itself, 
+            such as to characterize a person by delineating a specific quirk or trait, to communicate an
+            abstract idea about a person, place, or thing through the concrete details of a short narrative. 
+            An anecdote is "a story with a point."</em></p>
+
+          <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+        </Col>
+        <Col sm={2} md={2}>
+          <img alt='Alan Turing at age 16' src='img/Alan_Turing_Aged_16.jpg'/>
+        </Col>
+      </Row>
+    </Grid>
   </div>
 )
 
