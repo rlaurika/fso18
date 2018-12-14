@@ -2,6 +2,8 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
 import { ListGroup, ListGroupItem, Grid, Row, Col } from 'react-bootstrap'
+import { Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
+import { PageHeader } from 'react-bootstrap'
 
 const Menu = () => {
   const activeStyle = {
@@ -132,21 +134,25 @@ class CreateNew extends React.Component {
     return(
       <div>
         <h2>create a new anecdote</h2>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            content 
-            <input name='content' value={this.state.content} onChange={this.handleChange} />
-          </div>
-          <div>
-            author
-            <input name='author' value={this.state.author} onChange={this.handleChange} />
-          </div>
-          <div>
-            url for more info
-            <input name='info' value={this.state.info} onChange={this.handleChange} />
-          </div> 
-          <button>create</button>
-        </form>
+        <Form onSubmit={this.handleSubmit} horizontal>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Content:</Col>
+            <Col sm={9}>
+              <FormControl name='content' value={this.state.content} onChange={this.handleChange} />
+            </Col>
+            <Col componentClass={ControlLabel} sm={2}>Author:</Col>
+            <Col sm={9}>
+              <FormControl name='author' value={this.state.author} onChange={this.handleChange} />
+            </Col>
+            <Col componentClass={ControlLabel} sm={2}>URL for more info:</Col>
+            <Col sm={9}>
+              <FormControl name='info' value={this.state.info} onChange={this.handleChange} />
+            </Col>
+            <Col sm={9} smOffset={2}>
+              <Button bsStyle="success" type="submit">create</Button>
+            </Col>
+          </FormGroup>
+        </Form>
       </div>  
     )
 
@@ -211,16 +217,16 @@ class App extends React.Component {
       <div  className="container">
         <Router>
           <div>
-            <h1>Software anecdotes</h1>
-              <Menu />
-              <Notification notification={this.state.notification}/>
-              <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
-              <Route exact path="/about" render={() => <About />} />
-              <Route exact path="/create" render={({history}) =>
-                <CreateNew history={history} addNew={this.addNew} notify={this.notify}/>} />
-              <Route exact path="/anecdotes/:id" render={({match}) =>
-                <Anecdote anecdote={this.anecdoteById(match.params.id)} />}
-              />
+            <PageHeader>Software anecdotes</PageHeader>
+            <Menu />
+            <Notification notification={this.state.notification}/>
+            <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
+            <Route exact path="/about" render={() => <About />} />
+            <Route exact path="/create" render={({history}) =>
+              <CreateNew history={history} addNew={this.addNew} notify={this.notify}/>} />
+            <Route exact path="/anecdotes/:id" render={({match}) =>
+              <Anecdote anecdote={this.anecdoteById(match.params.id)} />}
+            />
             <Footer />
           </div>
         </Router>
