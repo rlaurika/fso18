@@ -20,9 +20,9 @@ describe('<App />', () => {
       const blogListComponents = app.find(BlogList)
       const newBlogFormComponents = app.find(NewBlogForm)
 
-      expect(loginFormComponents.length).toEqual(1)
-      expect(blogListComponents.length).toEqual(0)
-      expect(newBlogFormComponents.length).toEqual(0)
+      expect(loginFormComponents).toHaveLength(1)
+      expect(blogListComponents).toHaveLength(0)
+      expect(newBlogFormComponents).toHaveLength(0)
     })
   })
 
@@ -46,10 +46,10 @@ describe('<App />', () => {
       const newBlogFormComponents = app.find(NewBlogForm)
       const blogComponents = app.find(Blog)
 
-      expect(loginFormComponents.length).toEqual(0)
-      expect(blogListComponents.length).toEqual(1)
-      expect(newBlogFormComponents.length).toEqual(1)
-      expect(blogComponents.length).toEqual(blogService.blogs.length)
+      expect(loginFormComponents).toHaveLength(0)
+      expect(blogListComponents).toHaveLength(1)
+      expect(newBlogFormComponents).toHaveLength(1)
+      expect(blogComponents).toHaveLength(blogService.blogs.length)
     })
   })
 })

@@ -39,6 +39,6 @@ describe('<SimpleBlog />', () => {
     button.simulate('click')
     button.simulate('click')
 
-    expect(mockClickHandler.mock.calls.length).toBe(2)
+    expect(mockClickHandler.mock.calls).toHaveLength(2)
   })
 })

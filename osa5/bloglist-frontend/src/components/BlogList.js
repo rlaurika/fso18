@@ -2,7 +2,7 @@ import React from 'react'
 import Blog from './Blog'
 import PropTypes from 'prop-types'
 
-const BlogList = ({blogs, currentUser, likeButtonHandler, delButtonHandler}) => {
+const BlogList = ({ blogs, currentUser, likeButtonHandler, delButtonHandler }) => {
   const sortedBlogs = blogs.sort((a, b) => {
     return b.likes - a.likes
   })

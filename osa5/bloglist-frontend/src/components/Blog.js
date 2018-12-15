@@ -19,7 +19,7 @@ class Blog extends React.Component {
 
     const showDelButton = {
       display: !this.props.blog.user || this.props.currentUser === this.props.blog.user.username ?
-      '' : 'none'
+        '' : 'none'
     }
 
     const adder = (this.props.blog.user ? this.props.blog.user.name : 'anonymous')

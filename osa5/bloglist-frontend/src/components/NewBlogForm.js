@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const NewBlogForm = ({ newBlog, createNewBlog, handleNewBlogFieldChange }) => {
+const NewBlogForm = ({ newBlog, createNewBlog, handleNewBlogFieldChange }) => {
   return (
     <form method="post" onSubmit={createNewBlog}>
       <h2>create new</h2>

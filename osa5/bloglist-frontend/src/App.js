@@ -38,7 +38,7 @@ class App extends React.Component {
 
   showNotification = ({ notification, notificationClass }) => {
     this.setState({ notification: notification,
-                    notificationClass: notificationClass })
+      notificationClass: notificationClass })
     setTimeout(() => {
       this.setState({ notification: null, notificationClass: null })
     }, 3000)
@@ -57,7 +57,7 @@ class App extends React.Component {
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
     } catch (exception) {
       this.showNotification({ notification: 'Invalid username or password',
-                              notificationClass: 'error' })
+        notificationClass: 'error' })
     }
   }
 
@@ -86,15 +86,15 @@ class App extends React.Component {
       }
 
       this.setState({ newBlogTitle: '',
-                      newBlogAuthor: '',
-                      newBlogURL: '',
-                      blogs: this.state.blogs.concat(response) })
+        newBlogAuthor: '',
+        newBlogURL: '',
+        blogs: this.state.blogs.concat(response) })
 
       this.showNotification({ notification: `Added new blog ${response.title} by ${response.author}`,
-                              notificationClass: 'notice' })
+        notificationClass: 'notice' })
     } catch (exception) {
       this.showNotification({ notification: 'Could not add new blog',
-                              notificationClass: 'error' })
+        notificationClass: 'error' })
     }
   }
 
@@ -111,7 +111,7 @@ class App extends React.Component {
         this.setState({ blogs: updatedBlogs })
       } catch (exception) {
         this.showNotification({ notification: `Could not like blog: ${exception}`,
-                                notificationClass: 'error' })
+          notificationClass: 'error' })
       }
     }
   }
@@ -128,12 +128,12 @@ class App extends React.Component {
           this.setState({ blogs: updatedBlogs })
 
           this.showNotification({ notification: `Deleted '${blog.title}' by ${blog.author}`,
-                                  notificationClass: 'notice' })
+            notificationClass: 'notice' })
         }
       } catch (exception) {
         const blog = this.state.blogs.find(blog => blog._id === id)
         this.showNotification({ notification: `Not authorized to remove blog '${blog.title}' added by ${blog.user.name}`,
-                                notificationClass: 'error' })
+          notificationClass: 'error' })
       }
     }
   }
@@ -187,8 +187,8 @@ class App extends React.Component {
           </div>
         }
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App

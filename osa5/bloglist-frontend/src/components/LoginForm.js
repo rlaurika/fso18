@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const LoginForm = ({ doLogin, handleLoginFieldChange }) => {
+const LoginForm = ({ doLogin, handleLoginFieldChange }) => {
   return (
     <form method="post" onSubmit={doLogin}>
       <h2>Login to the Bloglist</h2>
